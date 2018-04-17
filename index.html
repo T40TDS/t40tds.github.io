@@ -1,0 +1,125 @@
+<html>
+<head>
+<script>
+</script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="sjcl.js" type="text/javascript"></script>
+<script>
+	var text = sjcl.encrypt("pass", "information");
+	var dec = sjcl.decrypt("pass", text);
+	function createCookie(name, value, days) {
+	    var date, expires;
+	    if (days) {
+	        date = new Date();
+	        date.setTime(date.getTime()+(days*24*60*60*1000));
+	        expires = "; expires="+date.toGMTString();
+	    } else {
+	        expires = "";
+	    }
+	    document.cookie = name+"="+value+expires+"; path=/";
+	}
+	function changeText(){
+		if (document.cookie != ""){
+			var modal = document.getElementById('myModal');
+			modal.style.display = "block";
+		}
+		var input = document.getElementById("passkey")
+		input.addEventListener("keyup", function(event) {
+			event.preventDefault();
+			if(event.keyCode === 13){
+				passEntered();
+			}
+		});
+	}
+	function passEntered(){	
+		var passkey = document.getElementById("passkey").value;
+		var newText = document.cookie
+		newText = newText.substring(newText.indexOf("=")+1);
+		try{
+			dec = sjcl.decrypt(passkey,newText)
+			document.getElementById("scratch").value = dec;
+			document.getElementById('myModal').style.display = "none";
+			document.getElementById("passkey").value = "";
+			document.getElementById("scratch").focus();
+		}catch(err){
+			document.getElementById("error").innerHTML = "Incorect passkey! Try again!<br> Maybe you saved without a passkey? Try a blank passkey."
+			document.getElementById("passkey").value = "";
+		}
+	}
+	function saveText(){
+		var encr_modal = document.getElementById("encr_modal");
+		encr_modal.style.display = "block";
+		document.getElementById("encr_pass").focus();
+		document.getElementById("encr_pass").addEventListener("keyup", function(event) {
+			event.preventDefault();
+			if(event.keyCode === 13){
+				onSave();
+			}
+		});		
+	}
+	function onSave(){
+		var passEntered = document.getElementById("encr_pass").value;
+		var savedText = document.getElementById("scratch").value;
+		var enc = sjcl.encrypt(passEntered, savedText);
+		createCookie("text", enc, 360);
+		console.log("saved: " + enc);
+		document.getElementById("encr_modal").style.display = "none";
+		document.getElementById("encr_pass").value = "";
+		document.getElementById("scratch").focus();
+	}
+	window.onclick = function(event) {
+    	var modal = document.getElementById('myModal');
+    	var encr_modal = document.getElementById("encr_modal");
+    	if (event.target == modal) {
+        	modal.style.display = "none";
+    	}
+    	if (event.target == encr_modal){
+    		encr_modal.style.display = "none";
+    	}
+	}
+
+	document.onkeydown = function(event){
+		var eventobj = event || window.event();
+		if((eventobj.which == 83 || eventobj.keyCode == 83) && eventobj.ctrlKey){
+			eventobj.preventDefault();
+			document.getElementById("saveButton").click();
+		}
+	}	
+</script>
+</head>
+<body onload="changeText()">
+<div style="margin:auto; height:15%">
+<img align="center" style="margin:auto; height:100%; display:block; padding:1em;" src="g150.png">
+</div>
+<form>
+  <div style="margin:auto;text-align: center;">
+  <textarea autofocus id="scratch" placeholder="CryptoScratch is an encrypted scratchpad webapp, developed in javascript. Press save (or ctrl-s) to save your progress. Your data is stored stored locally with cookies. Everything is encrypted, nothing is in plain-text. So go ahead, type away! No need to worry about security leaks! Your data is encrypted using the Stanford Javascript Cryptographic Library (SJCL). The data is encrypted and stored locally, on your computer. We don't store any of your information on our servers! Be careful, if you can't remember your passkey, there's no way to recover your data. Press save (or ctrl-s) to save your data, and it will be there for you when you return. " style="border-style: hidden; resize: none; width: 80%; height: 70%;"></textarea><br>
+  <input type="button" class="button saveButton" value="SAVE" id="saveButton" onclick="saveText()">
+  </div>
+</form>
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <p>Enter your passkey to load the last saved scratchpad:</p>
+    <form onSubmit="return false" style="text-align: center">
+    	<input autofocus type="password" name="passkey" id="passkey">
+    </form>
+    <div style="text-align:center;" id="error"></div>
+  </div>
+
+</div>
+</div>
+<div id="encr_modal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <p>Enter the passkey to encrypt the scratchpad. This passkey is for you to remember, it isn't stored anywhere!</p>
+    <form onSubmit="return false" style="text-align: center">
+    	<input autofocus type="password" name="encr_pass" id="encr_pass">
+    </form>
+  </div>
+</div>
+</body>
+</html>
