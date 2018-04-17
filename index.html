@@ -22,14 +22,18 @@
 		if (document.cookie != ""){
 			var modal = document.getElementById('myModal');
 			modal.style.display = "block";
+		
+			var input = document.getElementById("passkey")
+			input.addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if(event.keyCode === 13){
+					passEntered();
+				}
+			});
 		}
-		var input = document.getElementById("passkey")
-		input.addEventListener("keyup", function(event) {
-			event.preventDefault();
-			if(event.keyCode === 13){
-				passEntered();
-			}
-		});
+		else{
+			document.getElementById("scratch").focus();
+		}
 	}
 	function passEntered(){	
 		var passkey = document.getElementById("passkey").value;
@@ -93,7 +97,7 @@
 </div>
 <form>
   <div style="margin:auto;text-align: center;">
-  <textarea autofocus id="scratch" placeholder="CryptoScratch is an encrypted scratchpad webapp, developed in javascript. Press save (or ctrl-s) to save your progress. Your data is stored stored locally with cookies. Everything is encrypted, nothing is in plain-text. So go ahead, type away! No need to worry about security leaks! Your data is encrypted using the Stanford Javascript Cryptographic Library (SJCL). The data is encrypted and stored locally, on your computer. We don't store any of your information on our servers! Be careful, if you can't remember your passkey, there's no way to recover your data. Press save (or ctrl-s) to save your data, and it will be there for you when you return. " style="border-style: hidden; resize: none; width: 80%; height: 70%;"></textarea><br>
+  <textarea id="scratch" placeholder="CryptoScratch is an encrypted scratchpad webapp, developed in javascript. Press save (or ctrl-s) to save your progress. Your data is stored stored locally with cookies. Everything is encrypted, nothing is in plain-text. So go ahead, type away! No need to worry about security leaks! Your data is encrypted using the Stanford Javascript Cryptographic Library (SJCL). The data is encrypted and stored locally, on your computer. We don't store any of your information on our servers! Be careful, if you can't remember your passkey, there's no way to recover your data. Press save (or ctrl-s) to save your data, and it will be there for you when you return. " style="border-style: hidden; resize: none; width: 80%; height: 70%;"></textarea><br>
   <input type="button" class="button saveButton" value="SAVE" id="saveButton" onclick="saveText()">
   </div>
 </form>
