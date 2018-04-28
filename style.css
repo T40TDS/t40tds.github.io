@@ -10,6 +10,8 @@ body{
 	font-size: x-large;
 	background-color: inherit;
 	color:white;
+	cursor: text; 
+	cursor-color:white;
 }
 
 /* The Modal (background) */
@@ -72,3 +74,4 @@ body{
 }
 
 .saveButton:hover {background-color:#e7e7e7; color: black;}
+.text {}
